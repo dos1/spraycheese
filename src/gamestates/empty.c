@@ -100,7 +100,7 @@ void Gamestate_Draw(struct Game* game, struct GamestateResources* data) {
 	}
 	al_hold_bitmap_drawing(false);
 
-	al_draw_bitmap(data->click ? data->spray2 : data->spray1, game->data->mouseX * 1280, game->data->mouseY * 720, 0);
+	al_draw_bitmap(data->click ? data->spray2 : data->spray1, game->data->mouseX * 1280 - 200, game->data->mouseY * 720 - 100, 0);
 
 	if (NUM == 0) {
 		DrawTextWithShadow(data->font, al_map_rgb(255, 255, 255), 1280 * 0.5, 720 * 0.5 - 100, ALLEGRO_ALIGN_CENTRE, "YOU PARTIED FOR 0 HOURS");
@@ -116,7 +116,7 @@ void Gamestate_ProcessEvent(struct Game* game, struct GamestateResources* data, 
 		// When there are no active gamestates, the engine will quit.
 	}
 
-	if (ev->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+	if ((ev->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev->type == ALLEGRO_EVENT_TOUCH_BEGIN)) {
 		data->click = true;
 		al_set_audio_stream_playing(data->sz, true);
 		NUM--;
@@ -124,7 +124,7 @@ void Gamestate_ProcessEvent(struct Game* game, struct GamestateResources* data, 
 			NUM = 0;
 		}
 	}
-	if (ev->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
+	if ((ev->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) || (ev->type == ALLEGRO_EVENT_TOUCH_END) || (ev->type == ALLEGRO_EVENT_TOUCH_CANCEL)) {
 		data->click = false;
 		al_set_audio_stream_playing(data->sz, false);
 	}
