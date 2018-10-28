@@ -28,6 +28,7 @@ struct GamestateResources {
 	// This struct is for every resource allocated and used by your gamestate.
 	// It gets created on load and then gets passed around to all other function calls.
 	struct Character* character;
+	ALLEGRO_FONT* font;
 	ALLEGRO_AUDIO_STREAM *music, *sz;
 	struct {
 		float a, b;
@@ -100,6 +101,11 @@ void Gamestate_Draw(struct Game* game, struct GamestateResources* data) {
 	al_hold_bitmap_drawing(false);
 
 	al_draw_bitmap(data->click ? data->spray2 : data->spray1, game->data->mouseX * 1280, game->data->mouseY * 720, 0);
+
+	if (NUM == 0) {
+		DrawTextWithShadow(data->font, al_map_rgb(255, 255, 255), 1280 * 0.5, 720 * 0.5 - 100, ALLEGRO_ALIGN_CENTRE, "YOU PARTIED FOR 0 HOURS");
+		DrawTextWithShadow(data->font, al_map_rgb(255, 255, 255), 1280 * 0.5, 720 * 0.5 + 100, ALLEGRO_ALIGN_LEFT, "yOU WIN");
+	}
 }
 
 void Gamestate_ProcessEvent(struct Game* game, struct GamestateResources* data, ALLEGRO_EVENT* ev) {
@@ -137,6 +143,8 @@ void* Gamestate_Load(struct Game* game, void (*progress)(struct Game*)) {
 	RegisterSpritesheet(game, data->character, "dos");
 	LoadSpritesheets(game, data->character, progress);
 
+	data->font = al_load_font(GetDataFilePath(game, "fonts/PerfectDOSVGA437.ttf"), 64, 0);
+
 	data->music = al_load_audio_stream(GetDataFilePath(game, "audiodump.ogg"), 4, 2048);
 	al_attach_audio_stream_to_mixer(data->music, game->audio.music);
 
@@ -155,6 +163,8 @@ void* Gamestate_Load(struct Game* game, void (*progress)(struct Game*)) {
 void Gamestate_Unload(struct Game* game, struct GamestateResources* data) {
 	// Called when the gamestate library is being unloaded.
 	// Good place for freeing all allocated memory and resources.
+	al_destroy_audio_stream(data->music);
+	al_destroy_audio_stream(data->sz);
 	free(data);
 }
 
