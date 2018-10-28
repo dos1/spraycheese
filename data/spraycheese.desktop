@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Spray Cheese
+Exec=spraycheese
+Comment=spray cheese
+Icon=spraycheese
+Terminal=false
+Categories=Game;ArcadeGame;

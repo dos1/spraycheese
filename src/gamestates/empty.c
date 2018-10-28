@@ -45,7 +45,7 @@ struct GamestateResources {
 	ALLEGRO_BITMAP *spray1, *spray2;
 };
 
-int Gamestate_ProgressCount = 1; // number of loading steps as reported by Gamestate_Load; 0 when missing
+int Gamestate_ProgressCount = 6; // number of loading steps as reported by Gamestate_Load; 0 when missing
 
 void Gamestate_Logic(struct Game* game, struct GamestateResources* data, double delta) {
 	// Here you should do all your game logic as if <delta> seconds have passed.
@@ -139,23 +139,29 @@ void* Gamestate_Load(struct Game* game, void (*progress)(struct Game*)) {
 
 	struct GamestateResources* data = calloc(1, sizeof(struct GamestateResources));
 
-	data->character = CreateCharacter(game, "dos");
-	RegisterSpritesheet(game, data->character, "dos");
-	LoadSpritesheets(game, data->character, progress);
-
 	data->font = al_load_font(GetDataFilePath(game, "fonts/PerfectDOSVGA437.ttf"), 64, 0);
+	progress(game);
 
 	data->music = al_load_audio_stream(GetDataFilePath(game, "audiodump.ogg"), 4, 2048);
 	al_attach_audio_stream_to_mixer(data->music, game->audio.music);
+	al_set_audio_stream_playing(data->music, false);
+	progress(game);
 
 	data->sz = al_load_audio_stream(GetDataFilePath(game, "spray.flac"), 4, 2048);
 	al_attach_audio_stream_to_mixer(data->sz, game->audio.fx);
 	al_set_audio_stream_playmode(data->sz, ALLEGRO_PLAYMODE_LOOP);
 	al_set_audio_stream_playing(data->sz, false);
 	al_set_audio_stream_gain(data->sz, 2.0);
+	progress(game);
+
+	data->character = CreateCharacter(game, "dos");
+	RegisterSpritesheet(game, data->character, "dos");
+	LoadSpritesheets(game, data->character, progress);
 
 	data->spray1 = al_load_bitmap(GetDataFilePath(game, "spray.png"));
+	progress(game);
 	data->spray2 = al_load_bitmap(GetDataFilePath(game, "spray2.png"));
+	progress(game);
 
 	return data;
 }
@@ -186,6 +192,7 @@ void Gamestate_Start(struct Game* game, struct GamestateResources* data) {
 	}
 	data->character->scaleX = 0.25;
 	data->character->scaleY = 0.25;
+	al_set_audio_stream_playing(data->music, true);
 }
 
 void Gamestate_Stop(struct Game* game, struct GamestateResources* data) {

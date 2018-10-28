@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(libsuperderpy-examples C)
+project(spraycheese C)
 
-SET(LIBSUPERDERPY_GAMENAME "superexamples" CACHE INTERNAL "")
-SET(LIBSUPERDERPY_GAMENAME_PRETTY "Super Examples" CACHE INTERNAL "")
+SET(LIBSUPERDERPY_GAMENAME "spraycheese" CACHE INTERNAL "")
+SET(LIBSUPERDERPY_GAMENAME_PRETTY "Spray Cheese" CACHE INTERNAL "")
 SET(LIBSUPERDERPY_ORIENTATION "LANDSCAPE" CACHE INTERNAL "")
 SET(LIBSUPERDERPY_VERSION "1.0" CACHE INTERNAL "")
 #add_definitions(-DLIBSUPERDERPY_SINGLE_THREAD=1)
@@ -13,7 +13,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/l
 include(libsuperderpy)
 include(SetPaths)
 
-set(EMSCRIPTEN_TOTAL_MEMORY "32")
+set(EMSCRIPTEN_TOTAL_MEMORY "512")
 
 add_subdirectory(libsuperderpy)
 add_subdirectory(src)
