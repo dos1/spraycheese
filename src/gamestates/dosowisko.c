@@ -82,7 +82,7 @@ static TM_ACTION(Type) {
 	strncpy(data->text, text, data->pos++);
 	data->text[data->pos] = 0;
 	if (strcmp(data->text, text) != 0) {
-		TM_AddBackgroundAction(data->timeline, Type, NULL, 60 + rand() % 60);
+		TM_AddBackgroundAction(data->timeline, Type, NULL, (60 + rand() % 60) / 1000.0);
 	} else {
 		al_stop_sample_instance(data->kbd);
 	}
@@ -113,7 +113,7 @@ void Gamestate_Draw(struct Game* game, struct GamestateResources* data) {
 
 		double tg = tan(-data->tan / 384.0 * ALLEGRO_PI - ALLEGRO_PI / 2);
 
-		int fade = data->fadeout ? 255 : data->fade;
+		int fade = data->fadeout ? 255 : (int)(data->fade);
 
 		al_set_target_bitmap(data->pixelator);
 		al_clear_to_color(al_map_rgb(35, 31, 32));
@@ -141,16 +141,16 @@ void Gamestate_Start(struct Game* game, struct GamestateResources* data) {
 	data->fadeout = false;
 	data->underscore = true;
 	strncpy(data->text, "#", 255);
-	TM_AddDelay(data->timeline, 300);
+	TM_AddDelay(data->timeline, 0.3);
 	TM_AddQueuedBackgroundAction(data->timeline, FadeIn, NULL, 0);
-	TM_AddDelay(data->timeline, 1500);
+	TM_AddDelay(data->timeline, 1.5);
 	TM_AddNamedAction(data->timeline, Play, TM_Args(data->kbd), "PlayKbd");
 	TM_AddQueuedBackgroundAction(data->timeline, Type, NULL, 0);
-	TM_AddDelay(data->timeline, 3200);
+	TM_AddDelay(data->timeline, 3.2);
 	TM_AddNamedAction(data->timeline, Play, TM_Args(data->key), "PlayKey");
-	TM_AddDelay(data->timeline, 50);
+	TM_AddDelay(data->timeline, 0.05);
 	TM_AddAction(data->timeline, FadeOut, NULL);
-	TM_AddDelay(data->timeline, 1000);
+	TM_AddDelay(data->timeline, 1.0);
 	TM_AddAction(data->timeline, End, NULL);
 	al_play_sample_instance(data->sound);
 }
@@ -165,7 +165,7 @@ void Gamestate_ProcessEvent(struct Game* game, struct GamestateResources* data, 
 void* Gamestate_Load(struct Game* game, void (*progress)(struct Game*)) {
 	struct GamestateResources* data = malloc(sizeof(struct GamestateResources));
 	int flags = al_get_new_bitmap_flags();
-	al_set_new_bitmap_flags(flags ^ ALLEGRO_MAG_LINEAR);
+	al_set_new_bitmap_flags(flags & ~ALLEGRO_MAG_LINEAR);
 
 	data->timeline = TM_Init(game, data, "main");
 	data->bitmap = CreateNotPreservedBitmap(320, 180);
@@ -239,7 +239,7 @@ void Gamestate_Unload(struct Game* game, struct GamestateResources* data) {
 
 void Gamestate_Reload(struct Game* game, struct GamestateResources* data) {
 	int flags = al_get_new_bitmap_flags();
-	al_set_new_bitmap_flags(flags ^ ALLEGRO_MAG_LINEAR);
+	al_set_new_bitmap_flags(flags & ~ALLEGRO_MAG_LINEAR);
 	data->bitmap = CreateNotPreservedBitmap(320, 180);
 	data->pixelator = CreateNotPreservedBitmap(320, 180);
 	al_set_new_bitmap_flags(flags);

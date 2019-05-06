@@ -1,5 +1,5 @@
 /*! \file main.c
- *  \brief Main file of Super Examples.
+ *  \brief Main file of Spray Cheese.
  */
 /*
  * Copyright (c) Sebastian Krzyszkowiak <dos@dosowisko.net>
@@ -37,18 +37,23 @@ int main(int argc, char** argv) {
 	al_set_org_name("dosowisko.net");
 	al_set_app_name(LIBSUPERDERPY_GAMENAME_PRETTY);
 
-	struct Game* game = libsuperderpy_init(argc, argv, LIBSUPERDERPY_GAMENAME, (struct Viewport){1280, 720});
+	struct Game* game = libsuperderpy_init(argc, argv, LIBSUPERDERPY_GAMENAME,
+		(struct Params){
+			1280,
+			720,
+			.handlers = (struct Handlers){
+				.event = GlobalEventHandler,
+				.destroy = DestroyGameData,
+			},
+		});
 	if (!game) { return 1; }
-
-	al_set_window_title(game->display, LIBSUPERDERPY_GAMENAME_PRETTY);
 
 	LoadGamestate(game, "dosowisko");
 	StartGamestate(game, "dosowisko");
 
 	game->data = CreateGameData(game);
 
-	game->handlers.event = GlobalEventHandler;
-	game->handlers.destroy = DestroyGameData;
+	al_hide_mouse_cursor(game->display);
 
 	return libsuperderpy_run(game);
 }

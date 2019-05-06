@@ -23,35 +23,19 @@
 
 bool GlobalEventHandler(struct Game* game, ALLEGRO_EVENT* ev) {
 	if ((ev->type == ALLEGRO_EVENT_KEY_DOWN) && (ev->keyboard.keycode == ALLEGRO_KEY_M)) {
-		game->config.mute = !game->config.mute;
-		al_set_mixer_gain(game->audio.mixer, game->config.mute ? 0.0 : 1.0);
-		SetConfigOption(game, "SuperDerpy", "mute", game->config.mute ? "1" : "0");
-		PrintConsole(game, "Mute: %d", game->config.mute);
+		ToggleMute(game);
 	}
 
 	if ((ev->type == ALLEGRO_EVENT_KEY_DOWN) && (ev->keyboard.keycode == ALLEGRO_KEY_F)) {
-		game->config.fullscreen = !game->config.fullscreen;
-		if (game->config.fullscreen) {
-			SetConfigOption(game, "SuperDerpy", "fullscreen", "1");
-			al_hide_mouse_cursor(game->display);
-		} else {
-			SetConfigOption(game, "SuperDerpy", "fullscreen", "0");
-			al_show_mouse_cursor(game->display);
-		}
-#ifdef ALLEGRO_ANDROID
-		al_set_display_flag(game->display, ALLEGRO_FRAMELESS, game->config.fullscreen);
-#endif
-		al_set_display_flag(game->display, ALLEGRO_FULLSCREEN_WINDOW, game->config.fullscreen);
-		SetupViewport(game, game->viewport_config);
-		PrintConsole(game, "Fullscreen toggled");
+		ToggleFullscreen(game);
 	}
 	if (ev->type == ALLEGRO_EVENT_MOUSE_AXES) {
-		game->data->mouseX = Clamp(0, 1, (ev->mouse.x - game->_priv.clip_rect.x) / (double)game->_priv.clip_rect.w);
-		game->data->mouseY = Clamp(0, 1, (ev->mouse.y - game->_priv.clip_rect.y) / (double)game->_priv.clip_rect.h);
+		game->data->mouseX = Clamp(0, 1, (ev->mouse.x - game->clip_rect.x) / (double)game->clip_rect.w);
+		game->data->mouseY = Clamp(0, 1, (ev->mouse.y - game->clip_rect.y) / (double)game->clip_rect.h);
 	}
 	if (ev->type == ALLEGRO_EVENT_TOUCH_MOVE) {
-		game->data->mouseX = Clamp(0, 1, (ev->touch.x - game->_priv.clip_rect.x) / (double)game->_priv.clip_rect.w);
-		game->data->mouseY = Clamp(0, 1, (ev->touch.y - game->_priv.clip_rect.y) / (double)game->_priv.clip_rect.h);
+		game->data->mouseX = Clamp(0, 1, (ev->touch.x - game->clip_rect.x) / (double)game->clip_rect.w);
+		game->data->mouseY = Clamp(0, 1, (ev->touch.y - game->clip_rect.y) / (double)game->clip_rect.h);
 	}
 
 	return false;
