@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2018 Sebastian Krzyszkowiak <dos@dosowisko.net> -->
 <component type="desktop-application">
-  <id>net.dosowisko.SprayCheese</id>
+  <id>net.dosowisko.spraycheese</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Spray Cheese</name>
